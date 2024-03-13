@@ -4,15 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Luis Martínez">
     <title>Encuentra tu Super Héroe</title>
-    <link rel="shortcut icon" href="./assets/img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="./assets/img/favicon.jpg" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
 <body>
     <header>
-        <nav class="navbar bg-body-dark bg-dark navbar-dark sticky-top mb-5">
+        <nav class="navbar bg-body-dark bg-dark navbar-dark fixed-top mb-5">
             <div class="container">
                 <a class="navbar-brand" href="#">
                     <img src="./assets/img/sh2.jpg" alt="Logo" width="50px" height="30px"
@@ -22,35 +23,41 @@
         </nav>
     </header>
 
-    <main>
-        <section class="row">
-            <div class="col-12 container text-center">
-                <img src="./assets/img/sh1.jpg" alt="imagen-central" width="50%" height="100%">
+    <main class="container">
+        <section class="row pt-md-5">
+            <div class="col-md-12 text-center pt-md-5">
+                <img src="./assets/img/sh1.jpg" alt="imagen-central" class="img-fluid">
             </div>
         </section>
 
         <section class="row">
-            <div class="container mt-5 col-8">
-                <h1 class="pb-5">Encuentra tu SuperHero</h1>
+            <div class="col-md-12 col-lg-10 mt-5">
+                <h1 class="pb-3">Encuentra tu SuperHero</h1>
                 <h5 class="mb-4">Ingresa el número del SuperHero a buscar.</h5>
                 <form id="searchForm">
-                    <div class="col input-group mb-3">
+                    <div class="input-group mb-3">
                         <input type="text" class="form-control"
                             placeholder="Escribe el número de tu Super Héroe favorito" name="super">
-                        <div class="col-12 input-group-append">
-                            <button id="findSh" class="col btn btn-outline-secondary text-bg-danger mt-2"
+                        <div class="input-group-append">
+                            <button id="findSh" class="btn btn-outline-secondary text-bg-danger mt-2"
                                 type="submit">Buscar</button>
                         </div>
                     </div>
                 </form>
-                <div id="superheroInfo" class="mt-4"></div>
             </div>
+        </section>
+
+        <section class="row">
+            <div class="col-md-6 mt-4" id="superheroInfo"></div>
+            <div class="col-md-6 mt-4" id="chartContainer" style="height: 100%;"></div>
         </section>
     </main>
 
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>

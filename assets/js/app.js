@@ -1,6 +1,7 @@
 $(function () {
     const searchForm = $("#searchForm");
     const superheroInfo = $("#superheroInfo");
+    const chartContainer = $("#chartContainer");
 
     searchForm.submit(function (e) {
         e.preventDefault();
@@ -16,62 +17,102 @@ $(function () {
         $.ajax({
             url: `https://www.superheroapi.com/api.php/3557040851228665/${superheroNumber}`,
             method: "GET",
-            success(superhero) {
+            success: function (superhero) {
+                // mostrar info en la consola
                 console.dir(superhero);
 
                 // Verificar si la respuesta indica éxito
                 if (superhero.response === "success") {
 
                     // Crear una card con toda la información del superhéroe
-                    const cardHtml = `
-                            <div class="card">
-                                <img src="${superhero.image.url}" class="card-img-top" alt="${superhero.name}">
-                                <div class="card-body">
-                                    <h5 class="card-title">${superhero.name}</h5>
-                                    <p class="card-text"><strong>Powerstats:</strong></p>
-                                    <ul>
-                                        <li>Intelligence: ${superhero.powerstats.intelligence}</li>
-                                        <li>Strength: ${superhero.powerstats.strength}</li>
-                                        <li>Speed: ${superhero.powerstats.speed}</li>
-                                        <li>Durability: ${superhero.powerstats.durability}</li>
-                                        <li>Power: ${superhero.powerstats.power}</li>
-                                        <li>Combat: ${superhero.powerstats.combat}</li>
-                                    </ul>
-                                    <p class="card-text"><strong>Biography:</strong></p>
-                                    <ul>
-                                        <li>Full Name: ${superhero.biography['full-name']}</li>
-                                        <li>Alter Egos: ${superhero.biography['alter-egos']}</li>
-                                        <li>Aliases: ${superhero.biography.aliases.join(', ')}</li>
-                                        <li>Place of Birth: ${superhero.biography['place-of-birth']}</li>
-                                        <li>First Appearance: ${superhero.biography['first-appearance']}</li>
-                                        <li>Publisher: ${superhero.biography.publisher}</li>
-                                        <li>Alignment: ${superhero.biography.alignment}</li>
-                                    </ul>
-                                    <p class="card-text"><strong>Appearance:</strong></p>
-                                    <ul>
-                                        <li>Gender: ${superhero.appearance.gender}</li>
-                                        <li>Race: ${superhero.appearance.race}</li>
-                                        <li>Height: ${superhero.appearance.height.join(', ')}</li>
-                                        <li>Weight: ${superhero.appearance.weight.join(', ')}</li>
-                                        <li>Eye Color: ${superhero.appearance['eye-color']}</li>
-                                        <li>Hair Color: ${superhero.appearance['hair-color']}</li>
-                                    </ul>
-                                    <p class="card-text"><strong>Work:</strong></p>
-                                    <ul>
-                                        <li>Occupation: ${superhero.work.occupation}</li>
-                                        <li>Base: ${superhero.work.base}</li>
-                                    </ul>
-                                    <p class="card-text"><strong>Connections:</strong></p>
-                                    <ul>
-                                        <li>Group Affiliation: ${superhero.connections['group-affiliation']}</li>
-                                        <li>Relatives: ${superhero.connections.relatives}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        `;
+                    let cardHtml = '<div class="card">';
+                    cardHtml += `<img src="${superhero.image.url}" class="card-img-top" alt="${superhero.name}">`;
+                    cardHtml += '<div class="card-body">';
+                    cardHtml += `<h5 class="card-title">${superhero.name}</h5>`;
+                    cardHtml += '<p class="card-text"><strong>Powerstats:</strong></p>';
+                    cardHtml += '<ul>';
+
+                    // Recorrer powerstats y agregar a la card
+                    Object.entries(superhero.powerstats).forEach(([key, value]) => {
+                        cardHtml += `<li>${key}: ${value}</li>`;
+                    });
+
+                    cardHtml += '</ul>';
+                    cardHtml += '<p class="card-text"><strong>Biography:</strong></p>';
+                    cardHtml += '<ul>';
+
+                    // Recorrer biography y agregar a la card
+                    Object.entries(superhero.biography).forEach(([key, value]) => {
+                        if (Array.isArray(value)) {
+                            cardHtml += `<li>${key}: ${value.join(', ')}</li>`;
+                        } else {
+                            cardHtml += `<li>${key}: ${value}</li>`;
+                        }
+                    });
+
+                    cardHtml += '</ul>';
+                    cardHtml += '<p class="card-text"><strong>Appearance:</strong></p>';
+                    cardHtml += '<ul>';
+
+                    // Recorrer appearance y agregar a la card
+                    Object.entries(superhero.appearance).forEach(([key, value]) => {
+                        if (Array.isArray(value)) {
+                            cardHtml += `<li>${key}: ${value.join(', ')}</li>`;
+                        } else {
+                            cardHtml += `<li>${key}: ${value}</li>`;
+                        }
+                    });
+
+                    cardHtml += '</ul>';
+                    cardHtml += '<p class="card-text"><strong>Work:</strong></p>';
+                    cardHtml += '<ul>';
+
+                    // Recorrer work y agregar a la card
+                    Object.entries(superhero.work).forEach(([key, value]) => {
+                        cardHtml += `<li>${key}: ${value}</li>`;
+                    });
+
+                    cardHtml += '</ul>';
+                    cardHtml += '<p class="card-text"><strong>Connections:</strong></p>';
+                    cardHtml += '<ul>';
+
+                    // Recorrer connections y agregar a la card
+                    Object.entries(superhero.connections).forEach(([key, value]) => {
+                        cardHtml += `<li>${key}: ${value}</li>`;
+                    });
+
+                    cardHtml += '</ul>';
+                    cardHtml += '</div>';
+                    cardHtml += '</div>';
 
                     // Mostrar la card en el contenedor
                     superheroInfo.html(cardHtml);
+
+                    // Gráfico canvas
+                    const options = {
+                        title: {
+                            text: `Estadisticas de poder para ${superhero.name}`
+                        },
+                        animationEnabled: true,
+                        data: [{
+                            type: "pie",
+                            startAngle: 40,
+                            toolTipContent: "<b>{label}</b>: {y}%",
+                            showInLegend: "true",
+                            legendText: "{label}",
+                            indexLabelFontSize: 16,
+                            indexLabel: "{label} - {y}%",
+                            dataPoints: []
+                        }]
+                    };
+
+                    // Recorrer powerstats para agregar datos al gráfico
+                    Object.entries(superhero.powerstats).forEach(([key, value]) => {
+                        options.data[0].dataPoints.push({ y: value, label: key });
+                    });
+
+                    chartContainer.CanvasJSChart(options);
+
                 } else {
                     // Mostrar mensaje de error si la respuesta no es éxito
                     alert("No se encontró el SuperHero. Ingresa un número válido.");
@@ -86,4 +127,6 @@ $(function () {
         });
     });
 });
+
+
 
